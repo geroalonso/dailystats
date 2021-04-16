@@ -1,6 +1,8 @@
 import requests
 import json
 from datetime import datetime, timedelta
+import csv
+import smtplib, ssl
 
 
 
@@ -21,13 +23,11 @@ response = requests.request("GET", url, data=payload, headers=headers, params=qu
 
 array  = response.text 
 
-print(array)
+
 
 data  = json.loads(array)
-
-
-
-
+print(data['results']['timesheets'])
+message = ''
 for key, val in data['results']['timesheets'].items():
 	if val['user_id'] == 865293:
 		val['user_id'] = 'LUIS ALFONSO RUIZ'
@@ -39,17 +39,34 @@ for key, val in data['results']['timesheets'].items():
 		val['user_id'] == 3045093
 		val['user_id'] = 'JAIRO ORTIZ CAMPO'
 
-	inicio = val['start'].split('T')[1]
+	inicio = val['start'].split('T')[1].split('-')[0]
+	fin = val['end'].split('T')[1].split('-')[0]
+	horas_trabajadas = round(val['duration']/3600, 2)
 
-	print(val['user_id'] + ' is working has arrived to the job at  ' + inicio)
+	message =  message + val['user_id'] + ' arrived today at work at  ' + inicio + ' and left at ' + fin + ' having worked for '+ str(horas_trabajadas) + ' hours \n'
+	
+print(message)
 
+port = 465  # For SSL
+smtp_server = "smtp.gmail.com"
+sender_email = "leasingibericmalls@gmail.com"  # Enter your address
+email = 'geronimoalonso@icloud.com'
+password = 'guwHer-zuwsi7-rusres'
+context = ssl.create_default_context()
+with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+	server.login(sender_email, password)
+	server.sendmail(sender_email, email, message)
 
-
-
-
-
-
-
+ 
+port = 465  # For SSL
+smtp_server = "smtp.gmail.com"
+sender_email = "leasingibericmalls@gmail.com"  # Enter your address
+email = 'admin@ibericmalls.com'
+password = 'guwHer-zuwsi7-rusres'
+context = ssl.create_default_context()
+with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+	server.login(sender_email, password)
+	server.sendmail(sender_email, email, message)
 
 
 
