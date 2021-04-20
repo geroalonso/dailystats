@@ -3,6 +3,8 @@ import json
 from datetime import datetime, timedelta
 import csv
 import smtplib, ssl
+import os
+from os import environ
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 
@@ -80,12 +82,12 @@ def timed_job():
 
 
 
-	# @sched.scheduled_job('cron', day_of_week='mon-fri', hour=17)
-	# def scheduled_job():
-	#     print('This job is run every weekday at 5pm.')
 
 sched.start()
 
 
+	# @sched.scheduled_job('cron', day_of_week='mon-fri', hour=17)
+	# def scheduled_job():
+	#     print('This job is run every weekday at 5pm.')
 
 
